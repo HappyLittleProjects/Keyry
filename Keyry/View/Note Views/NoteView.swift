@@ -26,8 +26,12 @@ struct NoteView: View {
   var body: some View {
     NavigationView {
       VStack {
-
-
+        ScrollView {
+          ForEach(note.keywords, id: \.self) { keyword in
+            Text(keyword)
+          }
+          Text(note.content)
+        }
       }
     }
     .navigationTitle(note.title)

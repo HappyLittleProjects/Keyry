@@ -71,9 +71,20 @@ class Folder: ObservableObject, Identifiable {
 
   // search notes in current folder and sub folders for notes that contain a
   // keyword or name that matches input
-  func search(_ keyword: String) -> [Note]? {
+  func search(_ keyword: String) -> [Note] {
+    var results: [Note] = []
 
-    return nil
+    for note in items {
+      if note.keywords.contains(keyword) {
+        results.append(note)
+      }
+    }
+
+    for folder in subDir {
+      results += folder.search(keyword)
+    }
+
+    return results
   }
 }
 
