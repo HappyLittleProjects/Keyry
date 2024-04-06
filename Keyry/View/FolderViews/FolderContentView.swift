@@ -24,7 +24,7 @@ struct FolderContentView: View {
           noteList
         }
 
-        searchButton
+        searchLayer
           .padding()
       }
     }
@@ -33,50 +33,72 @@ struct FolderContentView: View {
   var folderList: some View {
     ForEach(folder.subDir, id: \.id) { folder in
       NavigationLink(destination: FolderView(folder)){
-        Text(folder.name)
+        FolderCellView(folder: folder)
       }
     }
   }
 
   var noteList: some View {
     ForEach(folder.items, id: \.id) { note in
-      NavigationLink(destination: NoteView(folder: folder, note: note)){
-        Text(note.title)
+      ZStack(alignment: .leading){
+        NavigationLink(destination: NoteView(folder: folder, note: note)){
+          HStack {}
+        }.opacity(0)
+
+        NoteCellView(note: note)
+      }
+    }
+  }
+
+  var searchLayer: some View {
+    VStack {
+      Spacer()
+      HStack {
+        Spacer()
+        searchButton
       }
     }
   }
 
   var searchButton: some View {
-    VStack {
-      Spacer()
-      HStack {
-        Spacer()
-        Button {
-          isSearching.toggle()
-        } label: {
-          Image(systemName: "magnifyingglass")
-        }
-        .sheet(isPresented: $isSearching) {
-          NavigationView {
-            VStack {
-              TextField("search", text: $searchTextInput)
-                .onChange(of: searchTextInput) {
-                  searchResults = folder.search(searchTextInput)
-                }
-              List {
-                if searchResults.isEmpty {
-                  Text("No Results")
-                }
-                ForEach(searchResults, id: \.self) { note in
-                  NavigationLink(destination: NoteView(folder: folder, note: note)) {
-                    Text(note.title)
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+    Button {
+      isSearching.toggle()
+    } label: {
+      Image(systemName: "magnifyingglass")
+    }
+    .sheet(isPresented: $isSearching) {
+      SearchView(
+        folder: folder,
+        searchTextInput: $searchTextInput,
+        searchResults: $searchResults
+      )
+    }
+  }
+}
+
+struct FolderCellView: View {
+
+  @ObservedObject var folder: Folder
+
+  var body: some View {
+    HStack {
+      Image(systemName: "folder")
+        .frame(width: 25, height: 25)
+      Text(folder.name)
+    }
+  }
+
+}
+
+struct NoteCellView: View {
+
+  @ObservedObject var note: Note
+
+  var body: some View {
+    HStack {
+      Image(systemName: "doc")
+        .frame(width: 25, height: 25)
+      Text(note.title)
     }
   }
 }

@@ -43,8 +43,8 @@ struct NoteView: View {
   }
 
   var editNoteButton: some View {
-    Button {
-
+    NavigationLink {
+      EditNoteView(note: note, folder.nameExists(_:))
     } label: {
       Image(systemName: "pencil")
     }

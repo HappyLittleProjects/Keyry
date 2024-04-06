@@ -45,13 +45,22 @@ struct FolderView: View {
 
       VStack {
         Text("Create Folder")
-        PopUpView(addFunction: addFolder(name:), input: folder.makeUniqueName("New Folder"))
+        PopUpView(
+          addFunction: addFolder(name:),
+          input: folder.makeUniqueName("New Folder")
+        )
       }
     }
   }
 
   var createNoteButton: some View {
-    NavigationLink(destination: CreateNoteView(addNote: folder.addNote(_:), titleTextField: folder.makeUniqueName("New Note"))) {
+    NavigationLink(
+      destination: 
+        CreateNoteView(
+          addNote: folder.addNote(_:),
+          titleTextField: folder.makeUniqueName("New Note")
+        )
+    ) {
       Image(systemName: "doc.badge.plus")
     }
   }
@@ -68,5 +77,11 @@ struct FolderView: View {
 }
 
 #Preview {
-  FolderView()
+  let folder = Folder("Test Folder")
+  let testNote = Note("Test Note 1")
+  let _ = testNote.addKeywords(["abc", "ABC", "Abc"])
+  _ = folder.addNote(testNote)
+  _ = folder.newFolder("Test Folder 1")
+
+  return FolderView(folder)
 }

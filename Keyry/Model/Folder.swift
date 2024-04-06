@@ -75,7 +75,7 @@ class Folder: ObservableObject, Identifiable {
     var results: [Note] = []
 
     for note in items {
-      if note.keywords.contains(keyword) {
+      if note.keywords.contains(keyword) || note.title == keyword{
         results.append(note)
       }
     }

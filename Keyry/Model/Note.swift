@@ -7,7 +7,8 @@
 
 import Foundation
 
-class Note: ObservableObject{
+class Note: ObservableObject, Identifiable{
+  let id = UUID()
   //let dateCreated = Date()
   @Published var keywords: [String] = []
   //@Published var lastEdited = Date()
