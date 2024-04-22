@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct NoteView: View {
+  @Environment(\.editMode) private var editMode
+
   @ObservedObject var folder: Folder
   @ObservedObject var note: Note
+
+  @State var keywordsList: [String]
 
   @State var isEditing = false
   @State var newTitleTextField = ""
@@ -20,19 +24,22 @@ struct NoteView: View {
     self.folder = folder
     self.note = note
 
+    _keywordsList = State(initialValue: note.keywords)
+
     _newTitleTextField = State(initialValue: note.title)
   }
 
   var body: some View {
     NavigationView {
-      VStack {
-        ScrollView {
-          ForEach(note.keywords, id: \.self) { keyword in
-            Text(keyword)
-          }
+      ScrollView {
+        VStack (spacing: 10){
+          KeywordsExpandableView(keywords: keywordsList, isExpandable: true)
+            .padding(.bottom, 25)
+
           Text(note.content)
         }
       }
+      .padding()
     }
     .navigationTitle(note.title)
     .toolbar {
@@ -68,6 +75,8 @@ struct NoteView: View {
 #Preview {
   let folder = Folder()
   let note = Note("Some Note")
+  let _ = note.addKeywords(["test 1", "test 2", "test 3", "test 4", "test 5", "test 6", "test 789", "test 10", "test 11", "test 12", "test 13", "test 14", "test 15", "test 16", "test 17",])
+  note.content = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
 
   return NoteView(folder: folder, note: note)
 }
