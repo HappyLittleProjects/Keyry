@@ -18,13 +18,14 @@ struct FolderContentView: View {
       Text("Nothing here!")
     }
     else {
-      ZStack {
+      ZStack(alignment: .trailing) {
         List {
           folderList
           noteList
         }
 
-        searchLayer
+        searchButton
+          .frame(maxHeight: .infinity, alignment: .bottom)
           .padding()
       }
     }
@@ -36,6 +37,9 @@ struct FolderContentView: View {
         FolderCellView(folder: folder)
       }
     }
+    .onDelete(perform: { indexSet in
+      folder.subDir.remove(atOffsets: indexSet)
+    })
   }
 
   var noteList: some View {
@@ -48,16 +52,9 @@ struct FolderContentView: View {
         NoteCellView(note: note)
       }
     }
-  }
-
-  var searchLayer: some View {
-    VStack {
-      Spacer()
-      HStack {
-        Spacer()
-        searchButton
-      }
-    }
+    .onDelete(perform: { indexSet in
+      folder.items.remove(atOffsets: indexSet)
+    })
   }
 
   var searchButton: some View {
@@ -72,33 +69,6 @@ struct FolderContentView: View {
         searchTextInput: $searchTextInput,
         searchResults: $searchResults
       )
-    }
-  }
-}
-
-struct FolderCellView: View {
-
-  @ObservedObject var folder: Folder
-
-  var body: some View {
-    HStack {
-      Image(systemName: "folder")
-        .frame(width: 25, height: 25)
-      Text(folder.name)
-    }
-  }
-
-}
-
-struct NoteCellView: View {
-
-  @ObservedObject var note: Note
-
-  var body: some View {
-    HStack {
-      Image(systemName: "doc")
-        .frame(width: 25, height: 25)
-      Text(note.title)
     }
   }
 }
